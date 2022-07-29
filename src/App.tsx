@@ -13,9 +13,12 @@ type Email = {
   read:boolean,
 }
 
+
 function App() {
   // Use initialEmails for state
   const [emails, setEmails] = useState(initialEmails)
+  const [hideRead, setHideRead] = useState(false)
+  const [currentTab, setCurrentTab] = useState('inbox')
 
   function toggleRead(email: Email) {
     const emailsCopy: Email[] = structuredClone(emails)
@@ -38,15 +41,15 @@ function App() {
       <nav className="left-menu">
         <ul className="inbox-list">
           <li
-            className="item active"
-            onClick={() => setEmails((email) =>initialEmails)}
+            className={`item ${currentTab === 'inbox' ? 'active' : ''}`}
+            onClick={() => setCurrentTab('inbox')}
           >
             <span className="label">Inbox</span>
             <span className="count">?</span>
           </li>
           <li
-            className="item"
-            onClick={() => setEmails((email) =>initialEmails)}
+            className={`item ${currentTab === 'starred' ? 'active' : ''}`}
+            onClick={() => setCurrentTab('starred')}
           >
             <span className="label">Starred</span>
             <span className="count">?</span>
@@ -58,7 +61,7 @@ function App() {
               id="hide-read"
               type="checkbox"
               checked={false}
-            onChange={()=> {}}
+              onChange={e => setHideRead(e.target.checked)}
             />
           </li>
         </ul>
