@@ -5,7 +5,7 @@ import initialEmails from "./data/emails";
 import "./App.css";
 import { useState } from "react";
 
-type Emails = {
+type Email = {
   id: number,
   sender: string,
   title: string,
@@ -14,8 +14,23 @@ type Emails = {
 }
 
 function App() {
-  const [Emails, setEmails] = useState(initialEmails)
-  console.log(initialEmails);
+  // Use initialEmails for state
+  const [emails, setEmails] = useState(initialEmails)
+
+  function toggleRead(email: Email) {
+    const emailsCopy: Email[] = structuredClone(emails)
+    const match = emailsCopy.find(target => target.id === email.id)!
+
+    match.read = !match.read
+    setEmails(emailsCopy)
+  }
+
+  function toggleStarred(email: Email) {
+    const emailsCopy: Email[] = structuredClone(emails)
+    const match = emailsCopy.find(target => target.id === email.id)!
+    match.starred = !match.starred
+    setEmails(emailsCopy)
+  }
 
   return (
     <div className="app">
@@ -24,14 +39,14 @@ function App() {
         <ul className="inbox-list">
           <li
             className="item active"
-            onClick={() => {() => setEmails((active) => )}}
+            onClick={() => setEmails((email) =>initialEmails)}
           >
             <span className="label">Inbox</span>
             <span className="count">?</span>
           </li>
           <li
             className="item"
-            // onClick={() => {}}
+            onClick={() => setEmails((email) =>initialEmails)}
           >
             <span className="label">Starred</span>
             <span className="count">?</span>
@@ -43,12 +58,30 @@ function App() {
               id="hide-read"
               type="checkbox"
               checked={false}
-              // onChange={() => {}}
+            onChange={()=> {}}
             />
           </li>
         </ul>
       </nav>
-      <main className="emails">{/* Render a list of emails here */}</main>
+      <main className={"emails"}>
+        {emails.map(email => (
+          <div className={email.read ? 'email read' : 'email unread'}>
+            <input className="read-checkbox"
+              type='checkbox'
+              checked={email.read}
+              onClick={() => {
+                toggleRead(email)
+              }}
+            />
+            <input className="star-checkbox"
+              type='checkbox'
+              checked={email.starred}
+              onClick={() => { toggleStarred(email) }}/>
+            <span>{email.sender}</span>
+            <span className="title">{email.title}</span>
+          </div>
+        ))}
+      </main>
     </div>
   );
 }
